@@ -1,0 +1,12 @@
+let arch = @map_arch(x86_64="x86_64", aarch64="aarch64", x86="i686")
+let release = @fetch("https://api.github.com/repos/astral-sh/uv/releases/latest")
+let asset = "uv-{arch}-pc-windows-msvc.zip"
+let url = @json_value(release, "/assets/[name={asset}]/browser_download_url")
+let digest = @json_value(release, "/assets/[name={asset}]/digest")
+
+download url
+verify digest
+extract
+install exe "uv.exe"
+install exe "uvw.exe"
+install exe "uvx.exe"

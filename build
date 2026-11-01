@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+"""Builds what winbin-org.github.io serves into OUT_DIR. Files are copied by
+name, so nothing else in this repo gets published.
+
+    OUT_DIR/install.ps1   the installer
+    OUT_DIR/pkg/NAME      each package's manifest
+    OUT_DIR/names         generated: each package's name terminated by \\n, sorted bytewise
+"""
+
+import re
+import shutil
+import sys
+from pathlib import Path
+
+# The same rule as isPackageName in winbin's src/manifest.zig.
+NAME = re.compile(rb"[a-z0-9][a-z0-9._-]*")
+
+
+def fail(message):
+    sys.exit(f"error: {message}")
+
+
+def main():
+    if len(sys.argv) != 2:
+        sys.exit("usage: build OUT_DIR")
+    out = Path(sys.argv[1])
+    src = Path(__file__).resolve().parent
+    if out.exists():
+        fail(f"'{out}' already exists")
+
+    entries = list((src / "pkg").iterdir())
+    if not entries:
+        fail("pkg/ has no packages")
+    for entry in entries:
+        if not entry.is_file():
+            fail(f"pkg/ must contain only manifest files, found '{entry.name}'")
+        if not NAME.fullmatch(entry.name.encode()):
+            fail(f"invalid package name '{entry.name}': lowercase letters, digits, '.', '_' and '-' only")
+
+    (out / "pkg").mkdir(parents=True)
+    shutil.copyfile(src / "install.ps1", out / "install.ps1")
+    for entry in entries:
+        shutil.copyfile(entry, out / "pkg" / entry.name)
+    names = sorted(entry.name.encode() for entry in entries)
+    (out / "names").write_bytes(b"".join(name + b"\n" for name in names))
+
+
+if __name__ == "__main__":
+    main()

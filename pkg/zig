@@ -1,0 +1,12 @@
+let arch = @map_arch(x86_64="x86_64", aarch64="aarch64", x86="x86")
+let index = @fetch("https://ziglang.org/download/index.json")
+let versions = @json_keys(index, "/{*}/{arch}-windows/tarball", except="master")
+let version = @newest(versions, @compare_version)
+let tarball = @json_value(index, "/{version}/{arch}-windows/tarball")
+let shasum = @json_value(index, "/{version}/{arch}-windows/shasum")
+
+download tarball
+verify "sha256:{shasum}"
+extract
+install dir "zig-{version}" from "zig-{arch}-windows-{version}"
+install exelink "zig.exe" -> "zig-{version}/zig.exe"

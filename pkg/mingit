@@ -1,0 +1,14 @@
+let arch = @map_arch(x86_64="64-bit", aarch64="arm64", x86="32-bit")
+let release = @fetch("https://api.github.com/repos/git-for-windows/git/releases/latest")
+let tag = @json_value(release, "/tag_name")
+let base = @match_text(tag, "v{*}.windows.")
+let build = @match_text(tag, ".windows.{*}")
+let asset = "MinGit-{base}.{build}-{arch}.zip"
+let url = @json_value(release, "/assets/[name={asset}]/browser_download_url")
+let digest = @json_value(release, "/assets/[name={asset}]/digest")
+
+download url
+verify digest
+extract
+install dir "mingit-{base}.{build}" from "."
+install exelink "git.exe" -> "mingit-{base}.{build}/cmd/git.exe"

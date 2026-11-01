@@ -1,0 +1,11 @@
+let arch = @map_arch(x86_64="amd64", aarch64="arm64", x86="win32")
+let page = @fetch("https://www.python.org/downloads/windows/")
+let version = @match_text(page, "Latest Python 3 Release - Python {*}<")
+let minor = @match_text(version, "3.{*}.")
+
+download "https://www.python.org/ftp/python/{version}/python-{version}-embed-{arch}.zip"
+extract
+# with this file python runs isolated: a script can't import from its own directory, and PYTHONPATH is ignored
+discard "python3{minor}._pth"
+install dir "python-{version}" from "."
+install exelink "python.exe" -> "python-{version}/python.exe"

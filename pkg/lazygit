@@ -1,0 +1,14 @@
+let arch = @map_arch(x86_64="x86_64", aarch64="arm64", x86="32-bit")
+let release = @fetch("https://api.github.com/repos/jesseduffield/lazygit/releases/latest")
+let tag = @json_value(release, "/tag_name")
+let version = @match_text(tag, "v{*}")
+let asset = "lazygit_{version}_windows_{arch}.zip"
+let url = @json_value(release, "/assets/[name={asset}]/browser_download_url")
+let digest = @json_value(release, "/assets/[name={asset}]/digest")
+
+download url
+verify digest
+extract
+discard "LICENSE"
+discard "README.md"
+install exe "lazygit.exe"

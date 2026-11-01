@@ -1,0 +1,12 @@
+let arch = @map_arch(x86_64="win64", aarch64="winarm64")
+let release = @fetch("https://api.github.com/repos/FFmpeg-Builds/FFmpeg-Builds/releases/latest")
+let asset = "ffmpeg-master-latest-{arch}-lgpl"
+let url = @json_value(release, "/assets/[name={asset}.zip]/browser_download_url")
+let digest = @json_value(release, "/assets/[name={asset}.zip]/digest")
+
+download url
+verify digest
+extract
+install dir "ffmpeg-latest" from asset
+install exelink "ffmpeg.exe" -> "ffmpeg-latest/bin/ffmpeg.exe"
+install exelink "ffprobe.exe" -> "ffmpeg-latest/bin/ffprobe.exe"
