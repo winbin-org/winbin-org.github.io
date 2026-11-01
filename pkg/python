@@ -1,0 +1,8 @@
+let arch = @map_arch(x86_64="amd64", aarch64="arm64", x86="win32")
+let page = @fetch("https://www.python.org/downloads/windows/")
+let version = @match_text(page, "Latest Python 3 Release - Python {*}<")
+
+download "https://www.python.org/ftp/python/{version}/python-{version}-embed-{arch}.zip"
+extract
+install dir "python-{version}" from "."
+install exelink "python.exe" -> "python-{version}/python.exe"

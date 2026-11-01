@@ -1,0 +1,9 @@
+let arch = @map_arch(x86_64="x86_64", aarch64="aarch64", x86="x86")
+let release = @fetch("https://api.github.com/repos/marler8997/exelink/releases/latest")
+let asset = "exelink-{arch}.exe"
+let url = @json_value(release, "/assets/[name={asset}]/browser_download_url")
+let digest = @json_value(release, "/assets/[name={asset}]/digest")
+
+download url
+verify digest
+install exe "exelink.exe" from "{asset}"

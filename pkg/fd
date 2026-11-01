@@ -1,0 +1,17 @@
+let arch = @map_arch(x86_64="x86_64", aarch64="aarch64", x86="i686")
+let release = @fetch("https://api.github.com/repos/sharkdp/fd/releases/latest")
+let tag = @json_value(release, "/tag_name")
+let asset = "fd-{tag}-{arch}-pc-windows-msvc"
+let url = @json_value(release, "/assets/[name={asset}.zip]/browser_download_url")
+let digest = @json_value(release, "/assets/[name={asset}.zip]/digest")
+
+download url
+verify digest
+extract
+discard "{asset}/CHANGELOG.md"
+discard "{asset}/LICENSE-APACHE"
+discard "{asset}/LICENSE-MIT"
+discard "{asset}/README.md"
+discard "{asset}/autocomplete"
+discard "{asset}/fd.1"
+install exe "fd.exe" from "{asset}/fd.exe"

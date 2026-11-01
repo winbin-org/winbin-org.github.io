@@ -1,0 +1,10 @@
+let arch = @map_arch(x86_64="win", aarch64="winarm64")
+let release = @fetch("https://api.github.com/repos/ninja-build/ninja/releases/latest")
+let asset = "ninja-{arch}.zip"
+let url = @json_value(release, "/assets/[name={asset}]/browser_download_url")
+let digest = @json_value(release, "/assets/[name={asset}]/digest")
+
+download url
+verify digest
+extract
+install exe "ninja.exe"

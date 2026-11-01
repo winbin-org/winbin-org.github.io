@@ -1,0 +1,12 @@
+let arch = @map_arch(x86_64="amd64", aarch64="arm64")
+let release = @fetch("https://api.github.com/repos/junegunn/fzf/releases/latest")
+let tag = @json_value(release, "/tag_name")
+let version = @match_text(tag, "v{*}")
+let asset = "fzf-{version}-windows_{arch}.zip"
+let url = @json_value(release, "/assets/[name={asset}]/browser_download_url")
+let digest = @json_value(release, "/assets/[name={asset}]/digest")
+
+download url
+verify digest
+extract
+install exe "fzf.exe"
