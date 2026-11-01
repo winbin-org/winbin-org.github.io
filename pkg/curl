@@ -1,0 +1,8 @@
+let arch = @map_arch(x86_64="win64", aarch64="win64a")
+let location = @fetch_redirect("https://curl.se/windows/latest.cgi?p={arch}-mingw.zip")
+let version = @match_text(location, "/dl-{*}/curl-")
+
+download "https://curl.se/windows/dl-{version}/curl-{version}-{arch}-mingw.zip"
+extract
+install dir "curl-{version}" from "curl-{version}-{arch}-mingw"
+install exelink "curl.exe" -> "curl-{version}/bin/curl.exe"

@@ -1,0 +1,10 @@
+let arch = @map_arch(x86_64="x86_64", aarch64="aarch64")
+let release = @fetch("https://api.github.com/repos/denoland/deno/releases/latest")
+let asset = "deno-{arch}-pc-windows-msvc.zip"
+let url = @json_value(release, "/assets/[name={asset}]/browser_download_url")
+let digest = @json_value(release, "/assets/[name={asset}]/digest")
+
+download url
+verify digest
+extract
+install exe "deno.exe"

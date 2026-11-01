@@ -1,0 +1,21 @@
+let arch = @map_arch(x86_64="x86_64", aarch64="aarch64", x86="i686")
+let dist = "https://static.rust-lang.org/rustup/dist/{arch}-pc-windows-msvc"
+let checksum = @fetch("{dist}/rustup-init.exe.sha256")
+let sha256 = @match_text(checksum, "{*}")
+
+download "{dist}/rustup-init.exe"
+verify "sha256:{sha256}"
+install exe "rustup.exe" from "rustup-init.exe"
+install hardlink "rustc.exe" -> "rustup.exe"
+install hardlink "rustdoc.exe" -> "rustup.exe"
+install hardlink "cargo.exe" -> "rustup.exe"
+install hardlink "rust-lldb.exe" -> "rustup.exe"
+install hardlink "rust-gdb.exe" -> "rustup.exe"
+install hardlink "rust-gdbgui.exe" -> "rustup.exe"
+install hardlink "rls.exe" -> "rustup.exe"
+install hardlink "cargo-clippy.exe" -> "rustup.exe"
+install hardlink "clippy-driver.exe" -> "rustup.exe"
+install hardlink "cargo-miri.exe" -> "rustup.exe"
+install hardlink "rust-analyzer.exe" -> "rustup.exe"
+install hardlink "rustfmt.exe" -> "rustup.exe"
+install hardlink "cargo-fmt.exe" -> "rustup.exe"

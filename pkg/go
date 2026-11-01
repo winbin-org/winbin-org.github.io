@@ -1,0 +1,13 @@
+let arch = @map_arch(x86_64="amd64", aarch64="arm64", x86="386")
+let latest = @fetch("https://go.dev/VERSION?m=text")
+let version = @match_text(latest, "go{*}")
+let index = @fetch("https://go.dev/dl/?mode=json")
+let file = "go{version}.windows-{arch}.zip"
+let sha = @json_value(index, "/[version=go{version}]/files/[filename={file}]/sha256")
+
+download "https://go.dev/dl/{file}"
+verify "sha256:{sha}"
+extract
+install dir "go-{version}" from "go"
+install exelink "go.exe" -> "go-{version}/bin/go.exe"
+install exelink "gofmt.exe" -> "go-{version}/bin/gofmt.exe"

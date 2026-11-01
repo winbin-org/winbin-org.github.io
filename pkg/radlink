@@ -1,0 +1,17 @@
+let arch = @map_arch(x86_64="x86_64")
+let release = @fetch("https://api.github.com/repos/EpicGames/raddebugger/releases/latest")
+let url = @json_value(release, "/assets/[name=raddbg.zip]/browser_download_url")
+let digest = @json_value(release, "/assets/[name=raddbg.zip]/digest")
+
+download url
+verify digest
+extract
+discard "radbin.exe"
+discard "radbin.pdb"
+discard "raddbg.com"
+discard "raddbg.exe"
+discard "raddbg.pdb"
+discard "raddbg_markup.h"
+discard "raddbg_readme.md"
+install exe "radlink.exe"
+install pdb "radlink.pdb"

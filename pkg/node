@@ -1,0 +1,10 @@
+let arch = @map_arch(x86_64="x64", aarch64="arm64")
+let sums = @fetch("https://nodejs.org/dist/latest/SHASUMS256.txt")
+let version = @match_text(sums, "node-v{*}-win-{arch}.zip")
+let sha = @match_text(sums, "{*}  node-v{version}-win-{arch}.zip")
+
+download "https://nodejs.org/dist/v{version}/node-v{version}-win-{arch}.zip"
+verify "sha256:{sha}"
+extract
+install dir "node-{version}" from "node-v{version}-win-{arch}"
+install exelink "node.exe" -> "node-{version}/node.exe"

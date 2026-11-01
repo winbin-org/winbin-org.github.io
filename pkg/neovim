@@ -1,0 +1,13 @@
+let arch = @map_arch(x86_64="win64", aarch64="win-arm64")
+let release = @fetch("https://api.github.com/repos/neovim/neovim/releases/latest")
+let tag = @json_value(release, "/tag_name")
+let version = @match_text(tag, "v{*}")
+let asset = "nvim-{arch}"
+let url = @json_value(release, "/assets/[name={asset}.zip]/browser_download_url")
+let digest = @json_value(release, "/assets/[name={asset}.zip]/digest")
+
+download url
+verify digest
+extract
+install dir "neovim-{version}" from asset
+install exelink "nvim.exe" -> "neovim-{version}/bin/nvim.exe"

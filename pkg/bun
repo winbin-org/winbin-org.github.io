@@ -1,0 +1,10 @@
+let arch = @map_arch(x86_64="x64-baseline", aarch64="aarch64")
+let release = @fetch("https://api.github.com/repos/oven-sh/bun/releases/latest")
+let dir = "bun-windows-{arch}"
+let url = @json_value(release, "/assets/[name={dir}.zip]/browser_download_url")
+let digest = @json_value(release, "/assets/[name={dir}.zip]/digest")
+
+download url
+verify digest
+extract
+install exe "bun.exe" from "{dir}/bun.exe"
